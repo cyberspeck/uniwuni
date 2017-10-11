@@ -1,0 +1,11 @@
+d={'a':1234, 'b':[1,4,'ert'], 'zz':'Text'}
+d['f']={}
+
+print d['a']
+
+for k, v in d.iteritems():
+    print k,v
+
+d['b']=7
+print d
+print d['b'][1]

@@ -1,0 +1,6 @@
+import sys
+
+print sys.argv
+z=int(sys.argv[3],2)
+s="%7d %x argv[0]: %s" % (z,z,sys.argv[0])
+print s
