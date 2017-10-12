@@ -1,3 +1,6 @@
+# https://stackoverflow.com/questions/2481269/how-to-make-a-simple-c-makefile
+# https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc_make.html#zz-2.
+
 CXX=g++
 CPPFLAGS=-g -Wall
 LDFLAGS=-g
