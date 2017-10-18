@@ -4,8 +4,10 @@
 class Sudoku {
     public:
         Sudoku();
-        int grid;
         int magic();
+        int import();
+    private:
+        bool grid[9][9][10];
 };
  
 #endif

@@ -9,5 +9,5 @@ using namespace std;
 int main() {
 
     Sudoku mein_sudoku;
-    mein_sudoku.magic();
+    //mein_sudoku.magic();
 }

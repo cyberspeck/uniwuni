@@ -23,12 +23,19 @@ using namespace std;
  
 Sudoku::Sudoku() 
 {
-    printf("ichbineinsudoku");
+    printf("ichbineinsudoku\n");
+    for(int i = 0; i < 9; i++) {
+        for(int j = 0; j < 9; j++){
+            for(int e = 0; e < 10; e++) {
+                grid[i][j][e] = (e ? false : true);
+                std::printf(grid[i][j][e] ? "true\n" : "false\n");
+            }
+        }
+    }
 }
 
 int Sudoku::magic()
 {
-    grid = 1;
     cout << grid;
-    return grid;
+    return 0;
 }
