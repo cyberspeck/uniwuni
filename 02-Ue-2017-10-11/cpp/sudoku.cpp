@@ -17,25 +17,39 @@ Structure -
 #include <stdio.h>
 #include <fstream>
 #include "sudoku.h"
+#include <string>
 
 using namespace std;
 
  
 Sudoku::Sudoku() 
 {
-    printf("ichbineinsudoku\n");
     for(int i = 0; i < 9; i++) {
         for(int j = 0; j < 9; j++){
             for(int e = 0; e < 10; e++) {
-                grid[i][j][e] = (e ? false : true);
+                grid[i][j][e] = (e ? true : false);
                 std::printf(grid[i][j][e] ? "true\n" : "false\n");
             }
         }
     }
+    printf("\n ichbineinsudoku\n");
 }
 
 int Sudoku::magic()
 {
     cout << grid;
+    return 0;
+}
+
+int Sudoku::import()
+{
+    string line;
+    ifstream sudo_in ("sudokus/sudoku_a_1.dat");
+    if (sudo_in.is_open()) {
+        while (getline (sudo_in, line) ) {
+            cout << line << endl;
+        }
+    }
+    sudo_in.close();
     return 0;
 }

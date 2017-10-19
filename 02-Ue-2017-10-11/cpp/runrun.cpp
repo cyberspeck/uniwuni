@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdio.h>
-#include "sudoku.h" 
+#include "sudoku.h"
 
 using namespace std;
 
@@ -9,5 +9,5 @@ using namespace std;
 int main() {
 
     Sudoku mein_sudoku;
-    //mein_sudoku.magic();
+    mein_sudoku.import();
 }
