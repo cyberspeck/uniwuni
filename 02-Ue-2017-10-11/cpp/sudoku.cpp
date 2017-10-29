@@ -25,44 +25,97 @@ using namespace std;
  
 Sudoku::Sudoku() 
 {
-    for(int i = 0; i < 80; i++) {
+    // initialise array: entire 0th dimension 'false'
+    // indicating that no number is known
+    // all other: 'true'
+    // indicating that all numbers 1-9 are possibly true
+    for(int i = 0; i < 81; i++) {
         for(int e = 0; e < 10; e++) {
             grid[i/9][i%9][e] = (e ? true : false);
-            printf("grid[%i][%i][%i] - ", i/9, i%9, e);
-            printf(grid[i/9][i%9][e] ? "true\n" : "false\n");
         }
     }
     printf("\n ichbineinsudoku\n");
 }
 
-int Sudoku::magic()
-{
-    cout << grid;
-    return 0;
-}
-
 int Sudoku::import()
 {
-    string line;
     ifstream sudo_in ("sudokus/sudoku_a_1.dat");
 //    ifstream sudo_in ("sudokus/ku20060924.sudo");
 
     if (!sudo_in) {
         exit(1);
+        // end process if file cannot be openend
     }
-    while (sudo_in) {
+    for(int i = 0; sudo_in; i++) {
         string strInput;
         sudo_in >> strInput;
         int entry = atoi(strInput.c_str());
-        for(int i = 0; i < 80; i++) {
-            grid[i/9][i%9][ 0 ] = (entry ? false : true);
+        if (entry) {
+            // number known, #th entry = 'true', others = 'false'
+            grid[i/9][i%9][ 0 ] = true; 
             for(int e = 1; e < 10; e++) {
-                grid[i%3][i%9][ e ] = ( (e == entry) ? true : false);
-                printf("grid[%i][%i][%i] - ", i/9, i%9, e);
-                printf(grid[i/9][i%9][e] ? "true\n" : "false\n");
+                grid[i/9][i%9][e] = ( (e == entry) ? true : false);
+            // set #th entry = 'false' in all other elements...
+            // ...of this line, row and block:
+            setOthers(i, entry);
             }
         }
     }
     sudo_in.close();
+    return 0;
+}
+
+std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku)
+{
+    for(int i = 0; i < 81; i++) {
+        if (sudoku.grid[i/9][i%9][0]) {
+            for(int e = 1; e < 10; e++) {
+                if (sudoku.grid[i/9][i%9][e]) {
+                    printf("%i", e);
+                    break;
+                }
+            }
+        }else{
+            printf("%i", 0);
+        }
+        printf( (i%3 == 2) ? "  " : " ");
+        printf( (i%9 == 8) ? "\n" : " ");
+        printf( (i%27 == 26) ? "\n" : "");
+    }
+    return out;
+}
+
+int Sudoku::checkElement(int x, int y)
+{
+    int fin = 0;
+    for(int e = 1; e < 10; e++) {
+        if (grid[x][y][e]) {
+            fin++;
+        }
+        if (fin == 1) grid[x][y][e] = true;
+    }
+    return 0;
+}
+
+int Sudoku::setOthers(int i, int entry)
+{
+    for(int k = 0; k < 9; k++) {
+    // set other elements in line:
+        if (k != i%9 && !grid[i/9][k][0]) {
+            grid[i/9][k][entry] = false;
+            checkElement(i/9, k);
+        }
+    // set other elements in row:
+        if (k != i/9 && !grid[k][i%9][0]) {
+            grid[k][i%9][entry] = false;
+            checkElement(k, i%9);
+        }
+    }
+    return 0;
+}
+
+int Sudoku::magic()
+{
+    cout << grid;
     return 0;
 }
