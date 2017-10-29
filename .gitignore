@@ -1,0 +1,7 @@
+*.gif
+*.dblite
+*.o
+*.vti
+*.dat
+*.swp
+bin/
