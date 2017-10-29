@@ -57,8 +57,8 @@ int Sudoku::import()
                 grid[i/9][i%9][e] = ( (e == entry) ? true : false);
             // set #th entry = 'false' in all other elements...
             // ...of this line, row and block:
-            setOthers(i, entry);
             }
+            setOthers(i, entry);
         }
     }
     sudo_in.close();
@@ -109,6 +109,16 @@ int Sudoku::setOthers(int i, int entry)
         if (k != i/9 && !grid[k][i%9][0]) {
             grid[k][i%9][entry] = false;
             checkElement(k, i%9);
+        }
+    }
+    cout << "Element " << i/9 << ", " << i%9 << endl;
+    for(int a = (i/9)/3*3; a < (i/9)/3*3+3; a++) {
+        for(int b = (i%9)/3*3; b < (i%9)/3*3+3; b++) {
+            cout << "line " << a << ", row " << b << endl;
+            if (a != i/9 && b != i%9 && !grid[a][b][0]) {
+                grid[a][b][entry] = false;
+                checkElement(a, b);
+            }
         }
     }
     return 0;
