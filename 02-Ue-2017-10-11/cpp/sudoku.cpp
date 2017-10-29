@@ -87,12 +87,14 @@ std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku)
 
 int Sudoku::checkElement(int x, int y)
 {
+    if (grid[x][y][0] == true) return 1;
+ 
     int fin = 0;
-    for(int e = 1; e < 10; e++) {
-        if (grid[x][y][e]) {
-            fin++;
-        }
-        if (fin == 1) grid[x][y][e] = true;
+    for(int e = 1; e < 10; e++) if (grid[x][y][e]) fin++;
+    if (fin == 1) {
+        grid[x][y][0] = true;
+        cout << "wohoo, we know something new!" << endl;
+        return 1;
     }
     return 0;
 }
@@ -101,12 +103,12 @@ int Sudoku::setOthers(int i, int entry)
 {
     for(int k = 0; k < 9; k++) {
     // set other elements in line:
-        if (k != i%9 && !grid[i/9][k][0]) {
+        if ( k != i%9 && !checkElement(i/9, k) ) {
             grid[i/9][k][entry] = false;
             checkElement(i/9, k);
         }
     // set other elements in row:
-        if (k != i/9 && !grid[k][i%9][0]) {
+        if ( k != i/9 && !checkElement(k, i%9) ) {
             grid[k][i%9][entry] = false;
             checkElement(k, i%9);
         }
