@@ -5,10 +5,10 @@
 using namespace std;
 
 
-
 int main() {
 
     Sudoku mein_sudoku;
     mein_sudoku.import();
     cout << endl << mein_sudoku;
+    mein_sudoku.magic();
 }

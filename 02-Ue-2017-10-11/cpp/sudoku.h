@@ -10,12 +10,14 @@ class Sudoku {
         int import();
         int show();
         int magic();
+        int force();
+        int clone(int mother[][10], int daughter[][10]);
         friend std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku);
 
     private:
-        bool grid[9][9][10];
-        int checkElement(int x, int y);
-        int setOthers(int i, int entry);
+        int grid[81][10];
+        int checkElement(int i);
+        int setOthers(int i);
 };
  
 #endif
