@@ -16,6 +16,7 @@ class Sudoku {
 
     private:
         int grid[81][10];
+        int setElement(int i, int e);
         int checkElement(int i);
         int setOthers(int i);
 };

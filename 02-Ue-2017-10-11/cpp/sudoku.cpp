@@ -1,15 +1,9 @@
 /*
-Program solving sudokus:
-
 Masterplan -
  1- being able to read sudoku data
  2- save data into suitable array of vector or sth. similar
  3- solve sudoku data using some clever strategy (or brute force)
  4- export solved sudoku into new file
-
-Structure -
- define class Sudoku
- methods for im-/exporting and solving
 */
 
 
@@ -50,15 +44,10 @@ int Sudoku::import()
         string strInput;
         sudo_in >> strInput;
         int entry = atoi(strInput.c_str());
+        cout << entry;
         if (entry) {
-            // number known, #th entry = 'true', others = 'false'
-            grid[i][ 0 ] = entry; 
-            for(int e = 1; e < 10; e++) {
-                grid[i][e] = ( (e == entry) ? 1 : 0);
-            // set #th entry = 'false' in all other elements...
-            // ...of this line, row and block:
-            }
-            setOthers(i, entry);
+            setElement(i, entry);
+            setOthers(i);
         }
     }
     sudo_in.close();
@@ -68,16 +57,6 @@ int Sudoku::import()
 std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku)
 {
     for(int i = 0; i < 81; i++) {
-//        if (sudoku.grid[i][0]) {
-//            for(int e = 1; e < 10; e++) {
-//                if (sudoku.grid[i][e]) {
-//                    printf("%i", e);
-//                    break;
-//                }
-//            }
-//        }else{
-//            printf("%i", 0);
-//        }
         cout << sudoku.grid[i][0];
         printf( (i%3 == 2) ? "  " : " ");
         printf( (i%9 == 8) ? "\n" : " ");
@@ -86,36 +65,37 @@ std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku)
     return out;
 }
 
+int Sudoku::setElement(int i, int entry)
+{
+    grid[i][0] = entry;
+    for(int e = 1; e < 10; e++) grid[i][e] = (e == entry) ? 1 : 0;
+    return 0;
+}
+
 int Sudoku::checkElement(int i)
 {
     if (grid[i][0]) return grid[i][0];
 
-    int entry = 0;
+    int solo = 0;
     for(int e = 1; e < 10; e++) {
         if (grid[i][e]) {
-            if (!entry) entry = e;
-            else {
-               return 0;
-            }
+            if (!solo) solo = e;
+            else return 0;
         }
     }
 
-    if (!entry) {
-        cout << "Sudoku broken!" << endl;
-        return -1;
-    } else {
-        if (!grid[i][0]) {
-            grid[i][0] = 1;
-            setOthers(i);
-        }
-        return entry;
+    if (solo) {
+        grid[i][0] = solo;
+//        setOthers(i);
+        cout << "wow" << endl;
+        return solo;
     }
-    exit(-1);
+    cout << "Element has no future!!" << endl;
+    exit(1);
 }
 
 int Sudoku::setOthers(int i)
 {
-    int remember = 0;
     for(int k = 0; k < 9; k++) {
     // set other elements in line:
         grid[i/9+k][ grid[i][0] ] = 0;
@@ -125,8 +105,8 @@ int Sudoku::setOthers(int i)
         checkElement(k*9+i%9);
     }
     // set other elements in block:
-    for(int a = (i/9)/3*3; a < (i/9)/3*3+3; a++) {
-        for(int b = (i%9)/3*3; b < (i%9)/3*3+3; b++) {
+    for(int a = ((i/9)/3)*3; a < ((i/9)/3)*3+3; a++) {
+        for(int b = ((i%9)/3)*3; b < ((i%9)/3)*3+3; b++) {
             grid[a*9+b][ grid[i][0] ] = 0;
             checkElement(a*9+b);
         }
@@ -138,44 +118,61 @@ int Sudoku::magic()
 {
     // check whether there are any numbers that can only exist
     // in a single element of a line/row/box
-    int solo[10];
-    solo[0] = 0;
-    for(int i = 1; i < 10; i++) solo[i] = 0;
+    int solo = 0;
 
-    for(int i = 0; i < 81; i++) {
-        for(int k = 0; k < 9; k++) {
+    for(int j = 0; j < 9; j++) {
+        for(int e = 1; e < 10; e++) {
+            for(int k = 0; k < 9; k++) {
         // check in line:
-            if ( k != i%9 && !checkElement(i/9+k) ) {
-                grid[i/9+k][entry] = false;
-                if ( checkElement(i/9+k) == 2) {
-                    exit(2);
+                if (grid[j*9+k][0] == e) {
+                    solo = -1;
+            // already known, continue with next e
+                    break;
                 }
-            }
-        // check in row:
-            if ( k != i/9 && !checkElement(k*9+i%9) ) {
-                grid[k*9+i%9][entry] = false;
-                if ( checkElement(k*9+i%9) == 2) {
-                    exit(2);
-                }
-            }
-        }
-        // check in box:
-        cout << "Element " << i/9 << ", " << i%9 << endl;
-        for(int a = (i/9)/3*3; a < (i/9)/3*3+3; a++) {
-            for(int b = (i%9)/3*3; b < (i%9)/3*3+3; b++) {
-                cout << "line " << a << ", row " << b << endl;
-                if (a != i/9 && b != i%9 && !grid[a*9+b][0]) {
-                    grid[a*9+b][entry] = false;
-                    if ( checkElement(a*9+b) == 2) {
-                        exit(2);
+                if (grid[j*9+k][e]) {
+                    if (!solo) solo = k;
+                    else {
+                        solo = -2;
+            // no magic possible, continue with next e
+                        break;
                     }
                 }
             }
+            if (solo < 0) continue;
+            if (solo) {
+                setElement( j*9+solo, e);
+                setOthers( j*9+solo );
+            } else {
+                cout << "Neither already known, nor anywhere possible! (line)" << endl;
+                exit(1);
+            }
+
+            for(int k = 0; k < 9; k++) {
+        // check in row:
+                if (grid[k*9+j][0] == e) {
+                    solo = -1;
+            // already known, continue with next e
+                    break;
+                }
+                if (grid[k*9+j][e]) {
+                    if (!solo) solo = k;
+                    else {
+                        solo = -2;
+            // no magic possible, continue with next e
+                        break;
+                    }
+                }
+            }
+            if (solo < 0) continue;
+            if (solo) {
+                setElement( solo*9+j, e);
+                setOthers( solo*9+j );
+            } else {
+                cout << "Neither already known, nor anywhere possible! (row)" << endl;
+                exit(1);
+            }
         }
     }
-    return 0;
-
-    cout << grid;
     return 0;
 
 }
@@ -194,7 +191,6 @@ int Sudoku::force()
 {
     int grid_old[81][10];
     clone(grid, grid_old);
-    int grid_buffer[81];
     for(int i = 0; i < 81; i++) {
         if ( !grid[i][0] ) {
             for(int e = 0; e < 10; e++) {
