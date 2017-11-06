@@ -7,7 +7,7 @@ using namespace std;
 class Sudoku {
     public:
         Sudoku();
-        int import();
+        int import(const char* lFile);
         int show();
         int magic();
         int force();
@@ -15,6 +15,7 @@ class Sudoku {
         friend std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku);
 
     private:
+        int magicApplied;
         int grid[81][10];
         int setElement(int i, int e);
         int checkElement(int i);

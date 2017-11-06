@@ -31,42 +31,57 @@ Sudoku::Sudoku()
     printf("\n ichbineinsudoku\n");
 }
 
-int Sudoku::import()
+int Sudoku::import(const char* lFile)
 {
-    ifstream sudo_in ("sudokus/sudoku_a_1.dat");
-//    ifstream sudo_in ("sudokus/eigen2.dat");
-//    ifstream sudo_in ("sudokus/ku20060924.sudo");
+    ifstream sudo_in (lFile);
 
     if (!sudo_in) {
         exit(1);
         // end process if file cannot be openend
     }
-    for(int i = 0; sudo_in; i++) {
-        string strInput;
-        sudo_in >> strInput;
-        int entry = atoi(strInput.c_str());
-//        cout << entry;
-        if (entry) {
-            setElement(i, entry);
-            setOthers(i);
+    string strInput;
+    sudo_in >> strInput;
+    if( strInput.length() <= 1 ) {
+        int i = 0;
+        do {
+            int entry = atoi(strInput.c_str());
+            if (entry) {
+                setElement(i, entry);
+                setOthers(i);
+            }
+            sudo_in >> strInput;
+            i++;
+        } while (sudo_in); 
+    } else {
+        for(int i = 0; i < 81; i++) {
+            char input = strInput[i];
+            int entry = input - '0';
+            if (entry) {
+                setElement(i, entry);
+                setOthers(i);
+            }
         }
     }
     sudo_in.close();
+    magicApplied = 0;
     return 0;
 }
 
 std::ostream& operator<< (std::ostream &out, const Sudoku &sudoku)
 {
+    int fin = 0;
     for(int l = 0; l >= 0; l--) {
 //        cout <<l<<l<<l<<l<<l<<l<<l<<l<<l<< endl;
         for(int i = 0; i < 81; i++) {
             cout << sudoku.grid[i][l];
+            if (sudoku.grid[i][l] == 0) fin = 1;
             printf( (i%3 == 2) ? "  " : " ");
             printf( (i%9 == 8) ? "\n" : " ");
             printf( (i%27 == 26) ? "\n" : "");
         }
         cout << endl;
     }
+    if (fin == 1 && sudoku.magicApplied) cout << "This sudoku is resistant to magic :(" << endl;
     return out;
 }
 
@@ -233,6 +248,7 @@ int Sudoku::magic()
         }
     }
 
+    magicApplied = 1;
     return magicHappened;
 
 }
