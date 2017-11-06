@@ -8,8 +8,8 @@ using namespace std;
 int main() {
 
     Sudoku mein_sudoku;
-    cout << endl << mein_sudoku << endl;
     mein_sudoku.import();
     cout << endl << mein_sudoku;
-//    mein_sudoku.magic();
+    while (mein_sudoku.magic());
+    cout << endl << mein_sudoku;
 }
