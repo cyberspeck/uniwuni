@@ -1,3 +1,0 @@
-import fig0
-
-print Rechteck(.7,5)

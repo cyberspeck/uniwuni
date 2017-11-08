@@ -1,8 +1,0 @@
-d={'a':1234, 'b':[1,4,'ert'], 'zz':'Text'}
-
-l=[1,2,3,'wert',3.14,(0,1),{'edv':5,'mathe':5},d]
-
-for i in l: print i
-
-for i, v in enumerate(l):
-   print 'Index',i,"Wert:",v
