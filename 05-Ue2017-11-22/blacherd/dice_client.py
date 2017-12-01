@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import socket, sys, string
 
 def connect(port, host):
@@ -18,17 +19,16 @@ def connect(port, host):
 	return s
 
 
-if len(sys.argv) != 2:
-	print("Usage: {} zinkung(int)".format(sys.argv[0]))
-	message = "help"
-else:
-	zinkung = string.atoi(sys.argv[1])
-	message = "throw 1 {}".format(zinkung)
-
-
-
 port = 56700
 host = 'localhost'
+
+if len(sys.argv) != 3:
+	print("Usage: {} würfe(int) zinkung(int)".format(sys.argv[0]))
+	message = "help"
+else:
+	zinkung = string.atoi(sys.argv[2])
+	N = string.atoi(sys.argv[1])
+	message = "throw {} {}".format(N, zinkung)
 
 s = connect(port, host)
 s.send(message+"\r\n") #\r\n ist der Zeilenumbruch in Windows
@@ -37,3 +37,13 @@ s.send(message+"\r\n") #\r\n ist der Zeilenumbruch in Windows
 data = s.recv(9192)
 s.close()
 print('Received:\n {}'.format(data))
+
+if message == "help": sys.exit(0);
+
+data = data.strip()
+throws = []
+
+for d in data:
+    throws.append(int(d))
+
+# throw enthält alle Würfe als Liste
