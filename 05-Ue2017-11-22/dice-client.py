@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""StatistikProgramm mit Entropieberechenung, Mittelwert und Standardabweichung und Detektion der Zinkung von Christopher Gollnhofer"""
+""" StatistikProgramm mit Entropieberechenung, Mittelwert und Standardabweichung und Detektion der ZinkungRandomness Generator von David Blacher, Christopher Gollnhofer, Johannes Kurz """
 import string
 import numpy as np
 import socket, sys
@@ -22,18 +22,17 @@ def connect(port, host):
 		sys.exit(1)
 	return s
 
-#if len(sys.argv) != 3:
-#	print("Usage: {} würfe(int) zinkung(int)".format(sys.argv[0]))
-#	message = "help"
-#else:
-#	zinkung = string.atoi(sys.argv[2])
-#	N = string.atoi(sys.argv[1])
-#	message = "throw {} {}".format(N, zinkung)
     
 wuerfe = 10000000
 port = 56700
 host = 'localhost'
 modi = [0, 1, 2, 3, 4, 5, 6, 71, 10, 11, 12, 13, 80, 20, 21, 22, 23, 100, 90, 70]
+
+if len(sys.argv) != 2:
+	print("Usage: {} würfe(int)".format(sys.argv[0]))
+	message = "help"
+else:
+	wuerfe = string.atoi(sys.argv[1])
 
 Ewert = np.zeros(len(modi))
 Entropie = np.zeros(len(modi))
@@ -48,7 +47,12 @@ for z in range(len(modi)):
     s.send(message+"\r\n") #\r\n ist der Zeilenumbruch in Windows
     
     # lesen der Antwort
-    data = s.recv(9192)
+    data = ""
+    while 1:
+        d= s.recv(9192)
+        if len(d) == 0: break
+        data += d
+
     s.close()
     #print('Received:\n {}\n\n'.format(data))
     
@@ -83,5 +87,10 @@ for z in range(len(modi)):
     print ("Standardabweichung:{}".format(StdAbw[z]))
     print ("Einzelne Wahrscheinlichkeiten: {}\n".format(probs))
 
-print( "Würfel mit kleinster Varianz: {}".format(modi[Varianz.argmin()]) )
+varianz_die = (1./6)*( np.power((3.5-1),2) + np.power((3.5-2),2) +  np.power((3.5-3),2) +  np.power((3.5-4),2) +  np.power((3.5-5),2) +  np.power((3.5-6),2) )
+stdabw_die = np.sqrt( varianz_die )
+print( "Würfel mit StdAbw am nächsten zu echtem Würfel (1.707825127659933...): {}".format(modi[( np.power( (StdAbw - stdabw_die),2 ) ).argmin()]) )
+print( "Würfel mit Erwartungswert am nächsten zu 3.5: {}".format(modi[( np.power( (Ewert - 3.5),2 ) ).argmin()]) )
+print( "Würfel mit maximaler Entropie: {}".format(modi[( Entropie ).argmax()]) )
+
 
