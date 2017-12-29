@@ -35,14 +35,14 @@ class monteboy:
         print("I bims")
         return
 
-    def integriermalwas(self, ZUFALL, a=0, b=10, N=10):
+    def integriermalwas(self, ZUFALL, a=0, b=10, min=0, max=1, N=10):
         hit = 0
         miss = 0
 
         educated_guess = np.zeros( (N,2), float )
         for i in range(N):
             educated_guess[i,0] = a+(b-a)*ZUFALL.uni01()
-            educated_guess[i,1] = ZUFALL.uni01()*2-1
+            educated_guess[i,1] = ZUFALL.uni01()*(max-min)+min
 
             if ( np.sin(educated_guess[i,0]) == 0): continue
             if ( educated_guess[i,1] < np.sin(educated_guess[i,0]) ):
@@ -53,7 +53,7 @@ class monteboy:
                     print("wir liegen draußen.. sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
                     miss = miss + 1
             else:
-                if ( educated_guess[i,1] < 0. ):
+                if ( educated_guess[i,1] > 0. ):
                     print("wir liegen draußen.. sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
                     miss = miss + 1
                 else:
@@ -89,4 +89,4 @@ for i in range(zufall_anzahl):
 
 
 carl = monteboy()
-a, b = carl.integriermalwas(Miller, a=0, b=np.pi, N=100)
+a, b = carl.integriermalwas(Miller, a=0, b=np.pi, min=0, max=1, N=40)
