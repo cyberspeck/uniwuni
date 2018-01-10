@@ -47,19 +47,21 @@ class monteboy:
             if ( np.sin(educated_guess[i,0]) == 0): continue
             if ( educated_guess[i,1] < np.sin(educated_guess[i,0]) ):
                 if ( educated_guess[i,1] > 0. ):
-                    print("wir liegen drinnen!  sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
+                    #print("wir liegen drinnen!  sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
                     hit = hit + 1
                 else:
-                    print("wir liegen draußen.. sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
+                    #print("wir liegen draußen.. sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
                     miss = miss + 1
             else:
                 if ( educated_guess[i,1] > 0. ):
-                    print("wir liegen draußen.. sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
+                    #print("wir liegen draußen.. sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
                     miss = miss + 1
                 else:
-                    print("wir liegen drinnen!  sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
+                    #print("wir liegen drinnen!  sin({})={}, y={}".format(educated_guess[i,0],np.sin(educated_guess[i,0]), educated_guess[i,1]) )
                     hit = hit + 1
-
+        print("\nhit/(hit+miss) = {}".format(hit/(hit+miss)))
+        if ( b%np.pi==0 ):
+            print("int( |sin(x)| ) [{}, {}] / {}*{} = {}\n".format(a,b,(b-a),(max-min),2*b/np.pi/((max-min)*(b-a))))
         return (hit, miss)
 
 def funktion(*args, **kwargs):
@@ -80,13 +82,14 @@ m2 = 2147483647
 Miller = randoom(a2, c2, m2, seed)
 
 
-'''
+
 zufall_anzahl = 50000
-zufall_gefallen = Miller.gnout(1, zufall_anzahl)
+zufall_gefallen = Hansi.gnout(1, zufall_anzahl)
 for i in range(zufall_anzahl):
     print("{} {} {}".format(zufall_gefallen[i,0], zufall_gefallen[i,1], zufall_gefallen[i,2]))
+
+
 '''
-
-
 carl = monteboy()
-a, b = carl.integriermalwas(Miller, a=0, b=np.pi, min=0, max=1, N=40)
+hit, miss = carl.integriermalwas(Miller, a=0, b=np.pi, min=0, max=1, N=400)
+'''
