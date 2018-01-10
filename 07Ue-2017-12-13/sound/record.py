@@ -4,12 +4,13 @@
      -o filename: Write output to filename.raw and filename.dat (default: record16)
   RESULT:
    Records t seconds from your default sound card.
-   With a sample rate of 22050 Hz in format S16LE (16 bit int little endian)  
+   With a sample rate of 22050 Hz in format S16LE (16 bit int little endian)
 """
 import sys
 import time
 import getopt
 import alsaaudio
+import numpy as np
 from math import *
 from getopt import *
 
@@ -41,22 +42,36 @@ if __name__ == '__main__':
     #print len(data)
     if l:
       iwav += data
-    time.sleep(.001)
+    time.sleep(.00005)
 
-  
+
   fiwav = open(out_filename+".raw", "w")
   fiwav.write(iwav)
   fiwav.close()
+
+  rec_arr=[]
 
   fidat = open(out_filename+".dat", "w")
   for i in range(0, len(iwav) / 2):
     lb = ord(iwav[2*i])
     hb = ord(iwav[2*i+1])
     f = (hb << 8) | lb
+    rec_arr.append(f)
     if hb > 127:
       f -= 65536
     print >> fidat, f
+
   fidat.close()
+
+  #fidat = open(out_filename+".dat", "r")
+  sp = np.fft.fft(rec_arr)
+ # for i, j in enumerate(rec_arr):
+	#print i,j
+  print("\n")
+  for i, j in enumerate(sp):
+	print i,j
+
+
 
 
 

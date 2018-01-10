@@ -7,22 +7,30 @@
             -h: Print this help message
   RESULT:
    Play a sound t seconds at your default sound card.
-   With a sample rate of 22050 Hz in format S16LE (16 bit int little endian)  
+   With a sample rate of 22050 Hz in format S16LE (16 bit int little endian)
 """
 import sys
 import time
 import getopt
 import alsaaudio
+import numpy as np
 from math import *
 from getopt import *
 from random import *
 
-def make_ramp(f0=30.,df=2000., ampl=30000., rate=22050,length=5):
-  # Zu Programmieren
-  return ""
+
+def make_ramp(f0=30.,df=2000., ampl=100000., rate=22050,length=5):
+  a = 2. * pi * f0/rate
+  n = int(rate * length)
+  df_step = df / rate
+  wav=''
+  for i in range(0, n):
+    f = int(ampl*sin((a+(i*df_step/rate))*i))
+    wav += chr(f & 0x00FF) + chr((f & 0xFF00) >> 8)
+  return wav
 # -------------------------------------
-def make_sin(f0=1000.,ampl=30000,rate=22050,length=5.):
-  a = 2. * pi * f0/rate              
+def make_sin(f0=1000.,ampl=100000,rate=22050,length=5.):
+  a = 2. * pi * f0/rate
   n = int(rate * length)
   wav=''
   for i in range(0, n):
@@ -31,14 +39,14 @@ def make_sin(f0=1000.,ampl=30000,rate=22050,length=5.):
   return wav
 # ------------------------------------------
 def make_noise(ampl=30000,rate=22050,length=5.):
-    """ Generate a noise signal
-          parameters:
-            amplitude, sample rate, duration
-         return
-            character buffer 
-    """
-    return ""
-  # Zu Programmieren 
+
+  n = int(rate * length)
+  df_step = df / rate
+  wav=''
+  for i in range(0, n):
+    f = int((np.random.rand()*2-1)*ampl)
+    wav += chr(f & 0x00FF) + chr((f & 0xFF00) >> 8)
+  return wav
 # ------------------------------------------
 
 if __name__ == '__main__':
@@ -66,7 +74,7 @@ if __name__ == '__main__':
 
   wave=type_d[sound]["func"](**type_d[sound]["args"])
 
-  # Open the device in playback mode. 
+  # Open the device in playback mode.
   out = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, card=crd)
   # Set attributes: Mono, 44100 Hz, 16 bit little endian frames
   out.setchannels(1)
